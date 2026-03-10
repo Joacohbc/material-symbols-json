@@ -3,6 +3,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TEMP_DIR="$SCRIPT_DIR/.fonts_tmp"
+FONTS_DIR="$SCRIPT_DIR/fonts"
 BASE_URL="https://github.com/google/material-design-icons/raw/master/variablefont"
 
 # Map: variant name -> font filename on GitHub
@@ -13,11 +14,16 @@ declare -A VARIANTS=(
 )
 
 mkdir -p "$TEMP_DIR"
+mkdir -p "$FONTS_DIR"
 
 for variant in "${!VARIANTS[@]}"; do
     filename="${VARIANTS[$variant]}"
     url="${BASE_URL}/${filename}"
-    ttf_file="$TEMP_DIR/${variant}.ttf"
+    
+    # Capitalize the variant for the filename
+    variant_cap="$(tr '[:lower:]' '[:upper:]' <<< ${variant:0:1})${variant:1}"
+    font_filename="MaterialSymbols${variant_cap}.ttf"
+    ttf_file="$FONTS_DIR/$font_filename"
 
     echo "📥 Downloading ${variant} font..."
     curl -L -o "$ttf_file" "$url"
@@ -32,5 +38,6 @@ echo "🧹 Cleaning up temporary files..."
 rm -rf "$TEMP_DIR"
 
 echo ""
-echo "✅ Done! Generated JSON files:"
-ls -lh "$SCRIPT_DIR"/icons-*.json 2>/dev/null || echo "   (none found)"
+echo "✅ Done! Generated JSON files and organized fonts:"
+ls -lh "$SCRIPT_DIR"/icons-*.json 2>/dev/null || echo "   (no JSON found)"
+ls -lh "$FONTS_DIR"/*.ttf 2>/dev/null || echo "   (no TTF found)"

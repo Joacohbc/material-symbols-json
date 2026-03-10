@@ -8,16 +8,79 @@
   <style>
     @font-face {
       font-family: 'Material Symbols Outlined';
-      src: url('./MaterialSymbolsOutlined-VariableFont_FILL,GRAD,opsz,wght.ttf') format('truetype');
+      src: url('./fonts/MaterialSymbolsOutlined.ttf') format('truetype');
       font-weight: 100 700;
       font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'Material Symbols Rounded';
+      src: url('./fonts/MaterialSymbolsRounded.ttf') format('truetype');
+      font-weight: 100 700;
+      font-style: normal;
+    }
+
+    @font-face {
+      font-family: 'Material Symbols Sharp';
+      src: url('./fonts/MaterialSymbolsSharp.ttf') format('truetype');
+      font-weight: 100 700;
+      font-style: normal;
+    }
+
+    * {
+      box-sizing: border-box;
     }
 
     body {
       margin: 0;
       background: #111;
       color: #eee;
-      font-family: sans-serif;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+    }
+
+    #toolbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: rgba(17, 17, 17, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #222;
+    }
+
+    #toolbar label {
+      font-size: 0.85rem;
+      color: #999;
+    }
+
+    #variant-select {
+      appearance: none;
+      background: #1e1e1e;
+      color: #eee;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 6px 32px 6px 12px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23888' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      transition: border-color 0.2s;
+    }
+
+    #variant-select:hover,
+    #variant-select:focus {
+      border-color: #666;
+      outline: none;
+    }
+
+    #icon-count {
+      font-size: 0.8rem;
+      color: #555;
+      margin-left: auto;
     }
 
     #grid {
@@ -35,10 +98,14 @@
       padding: 12px 4px;
       border-radius: 8px;
       background: #1a1a1a;
+      transition: background 0.15s;
+    }
+
+    .icon:hover {
+      background: #252525;
     }
 
     .icon span:first-child {
-      font-family: 'Material Symbols Outlined';
       font-size: 32px;
     }
 
@@ -52,24 +119,63 @@
 </head>
 
 <body>
+  <div id="toolbar">
+    <label for="variant-select">Variant:</label>
+    <select id="variant-select">
+      <option value="icons-outlined.json">Outlined</option>
+      <option value="icons-rounded.json">Rounded</option>
+      <option value="icons-sharp.json">Sharp</option>
+    </select>
+    <span id="icon-count"></span>
+  </div>
   <div id="grid"></div>
   <script>
-    fetch('./icons.json').then(r => r.json()).then(icons => {
-      const grid = document.getElementById('grid');
-      const f = document.createDocumentFragment();
-      for (const [name, codepoint] of Object.entries(icons)) {
-        const div = document.createElement('div');
-        div.className = 'icon';
-        const sym = document.createElement('span');
-        sym.textContent = String.fromCodePoint(codepoint);
-        const lbl = document.createElement('span');
-        lbl.textContent = name;
-        div.appendChild(sym);
-        div.appendChild(lbl);
-        f.appendChild(div);
-      }
-      grid.appendChild(f);
-    });
+    const grid = document.getElementById('grid');
+    const select = document.getElementById('variant-select');
+    const countEl = document.getElementById('icon-count');
+
+    const variantToFont = {
+      'icons.json': 'Material Symbols Outlined',
+      'icons-outlined.json': 'Material Symbols Outlined',
+      'icons-rounded.json': 'Material Symbols Rounded',
+      'icons-sharp.json': 'Material Symbols Sharp'
+    };
+
+    function loadIcons(file) {
+      grid.innerHTML = '';
+      countEl.textContent = 'Loading…';
+      const fontFamily = variantToFont[file] || 'Material Symbols Outlined';
+
+      fetch('./' + file)
+        .then(r => {
+          if (!r.ok) throw new Error(r.status);
+          return r.json();
+        })
+        .then(icons => {
+          const entries = Object.entries(icons);
+          countEl.textContent = entries.length + ' icons';
+          const f = document.createDocumentFragment();
+          for (const [name, codepoint] of entries) {
+            const div = document.createElement('div');
+            div.className = 'icon';
+            const sym = document.createElement('span');
+            sym.style.fontFamily = fontFamily;
+            sym.textContent = String.fromCodePoint(codepoint);
+            const lbl = document.createElement('span');
+            lbl.textContent = name;
+            div.appendChild(sym);
+            div.appendChild(lbl);
+            f.appendChild(div);
+          }
+          grid.appendChild(f);
+        })
+        .catch(() => {
+          countEl.textContent = 'File not found';
+        });
+    }
+
+    select.addEventListener('change', () => loadIcons(select.value));
+    loadIcons(select.value);
   </script>
 </body>
 
