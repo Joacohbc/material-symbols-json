@@ -15,13 +15,6 @@ importers:
       '@changesets/cli':
         specifier: ^2.30.0
         version: 2.30.0
-
-  material-icon-picker-helper:
-    dependencies:
-      '@changesets/cli':
-        specifier: ^2.30.0
-        version: 2.30.0
-    devDependencies:
       tsup:
         specifier: ^8.0.0
         version: 8.5.1(typescript@5.9.3)
