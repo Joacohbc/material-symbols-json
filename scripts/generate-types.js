@@ -1,9 +1,9 @@
 const fs = require('fs');
 const path = require('path');
 
-// __dirname is react-icon-picker/scripts
+// __dirname is scripts
 // so to get to material-symbols-json where the JSONs are:
-const iconsJsonPath = path.resolve(__dirname, '../../icons-outlined.json');
+const iconsJsonPath = path.resolve(__dirname, '../icons-outlined.json');
 
 
 const outputPath = path.resolve(__dirname, '../src/IconSet.ts');
