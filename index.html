@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8" />
@@ -54,7 +54,7 @@
 <body>
   <div id="grid"></div>
   <script>
-    fetch('./iconos.json').then(r => r.json()).then(icons => {
+    fetch('./icons.json').then(r => r.json()).then(icons => {
       const grid = document.getElementById('grid');
       const f = document.createDocumentFragment();
       for (const [name, codepoint] of Object.entries(icons)) {

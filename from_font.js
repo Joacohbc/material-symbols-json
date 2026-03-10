@@ -2,28 +2,33 @@ const opentype = require('opentype.js');
 const path = require('path');
 const fs = require('fs');
 
-// Rutas de entrada y salida
-const rutaFuente = path.join(__dirname, 'MaterialSymbolsOutlined-VariableFont_FILL,GRAD,opsz,wght.ttf');
-const rutaSalida = path.join(__dirname, 'iconos.json');
+// Input and output paths (overridable via CLI arguments)
+const fontPath = process.argv[2]
+    ? path.resolve(process.argv[2])
+    : path.join(__dirname, 'MaterialSymbolsOutlined-VariableFont_FILL,GRAD,opsz,wght.ttf');
 
-opentype.load(rutaFuente, (err, font) => {
+const outputPath = process.argv[3]
+    ? path.resolve(process.argv[3])
+    : path.join(__dirname, 'icons.json');
+
+opentype.load(fontPath, (err, font) => {
     if (err) {
-        console.error('❌ Error al cargar la fuente:', err);
-        return;
+        console.error('❌ Error loading font:', err);
+        process.exit(1);
     }
 
-    const iconos = {};
+    const icons = {};
 
     for (let i = 0; i < font.glyphs.length; i++) {
         const glyph = font.glyphs.get(i);
 
-        // Filtramos para quedarnos solo con glyphs que sean iconos reales:
-        // - Tienen nombre
-        // - Nombre de más de 1 carácter
-        // - No empiezan con '.'
-        // - No son codepoints unicode (uXXXX o uniXXXX)
-        // - No terminan en .fill
-        // - Su unicode está en el rango PUA o alto (>= 0xE000), descartando ASCII/Latin
+        // Filter to keep only real icon glyphs:
+        // - Has a name
+        // - Name is longer than 1 character
+        // - Doesn't start with '.'
+        // - Is not a unicode codepoint name (uXXXX or uniXXXX)
+        // - Doesn't end with .fill
+        // - Unicode is in the PUA range or higher (>= 0xE000), discarding ASCII/Latin
         if (
             glyph.name &&
             glyph.name.length > 1 &&
@@ -33,17 +38,17 @@ opentype.load(rutaFuente, (err, font) => {
             !glyph.name.endsWith('.fill') &&
             glyph.unicode >= 0xE000
         ) {
-            iconos[glyph.name.toLowerCase()] = glyph.unicode;
+            icons[glyph.name.toLowerCase()] = glyph.unicode;
         }
     }
 
-    // Ordenar alfabéticamente por nombre
-    const ordenado = {};
-    Object.keys(iconos).sort().forEach(key => {
-        ordenado[key] = iconos[key];
+    // Sort alphabetically by name
+    const sorted = {};
+    Object.keys(icons).sort().forEach(key => {
+        sorted[key] = icons[key];
     });
 
-    fs.writeFileSync(rutaSalida, JSON.stringify(ordenado, null, 2), 'utf-8');
+    fs.writeFileSync(outputPath, JSON.stringify(sorted, null, 2), 'utf-8');
 
-    console.log(`✅ ¡Éxito! Se guardaron ${Object.keys(ordenado).length} íconos en: ${rutaSalida}`);
+    console.log(`✅ Success! Saved ${Object.keys(sorted).length} icons to: ${outputPath}`);
 });
