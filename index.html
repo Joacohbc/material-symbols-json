@@ -1,631 +1,76 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Material Symbols Explorer</title>
-  <meta name="description" content="Explorador interactivo de iconos Material Symbols de Google, con búsqueda, filtro por categoría y variantes de estilo." />
-
-  <!-- Material Symbols font (Outlined, Rounded, Sharp) -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
-
+  <title>Material Symbols</title>
   <style>
-    :root {
-      --bg:       #0d0f14;
-      --surface:  #161b23;
-      --card:     #1e2530;
-      --card-h:   #252d3a;
-      --border:   #2a3344;
-      --accent:   #5b8dee;
-      --accent2:  #a78bfa;
-      --text:     #e2e8f0;
-      --muted:    #8a96a8;
-      --success:  #34d399;
-      --radius:   12px;
-      --font: 'Inter', system-ui, sans-serif;
+    @font-face {
+      font-family: 'Material Symbols Outlined';
+      src: url('./MaterialSymbolsOutlined-VariableFont_FILL,GRAD,opsz,wght.ttf') format('truetype');
+      font-weight: 100 700;
+      font-style: normal;
     }
-
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
-      font-family: var(--font);
-      background: var(--bg);
-      color: var(--text);
-      min-height: 100vh;
-    }
-
-    /* ── Header ── */
-    header {
-      background: linear-gradient(135deg, #1a1f2e 0%, #0d1117 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 28px 32px 24px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      backdrop-filter: blur(12px);
-    }
-
-    .header-top {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-bottom: 20px;
-    }
-
-    .logo-icon {
-      font-family: 'Material Symbols Outlined';
-      font-size: 36px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #e2e8f0 30%, #8a96a8);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-
-    .subtitle {
-      font-size: 0.78rem;
-      color: var(--muted);
-      font-weight: 400;
-    }
-
-    .badges {
-      display: flex;
-      gap: 8px;
-      margin-left: auto;
-    }
-
-    .badge {
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.7rem;
-      font-weight: 600;
-    }
-
-    .badge-web  { background: rgba(91,141,238,.2); color: #7ca9f5; border: 1px solid rgba(91,141,238,.3); }
-    .badge-repo { background: rgba(167,139,250,.2); color: #b8a6fb; border: 1px solid rgba(167,139,250,.3); }
-
-    /* ── Controls ── */
-    .controls {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .search-wrap {
-      position: relative;
-      flex: 1 1 260px;
-    }
-
-    .search-wrap .ico {
-      font-family: 'Material Symbols Outlined';
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: 20px;
-      pointer-events: none;
-    }
-
-    #search {
-      width: 100%;
-      padding: 10px 14px 10px 40px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 0.9rem;
-      transition: border .2s, box-shadow .2s;
-      outline: none;
-    }
-
-    #search:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px rgba(91,141,238,.18);
-    }
-
-    #search::placeholder { color: var(--muted); }
-
-    select {
-      padding: 10px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text);
-      font-family: var(--font);
-      font-size: 0.85rem;
-      cursor: pointer;
-      outline: none;
-      flex-shrink: 0;
-      transition: border .2s;
-    }
-
-    select:focus { border-color: var(--accent); }
-
-    /* style toggle */
-    .style-toggle {
-      display: flex;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      overflow: hidden;
-      flex-shrink: 0;
-    }
-
-    .style-toggle button {
-      padding: 10px 14px;
-      background: transparent;
-      border: none;
-      color: var(--muted);
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background .2s, color .2s;
-      white-space: nowrap;
-    }
-
-    .style-toggle button.active {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      color: #fff;
-    }
-
-    /* ── Source tabs ── */
-    .source-tabs {
-      display: flex;
-      gap: 6px;
-      flex-shrink: 0;
-    }
-
-    .source-tabs button {
-      padding: 8px 14px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      color: var(--muted);
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all .2s;
-    }
-
-    .source-tabs button.active {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(91,141,238,.1);
-    }
-
-    /* ── Stats bar ── */
-    #stats {
-      padding: 12px 32px;
-      font-size: 0.78rem;
-      color: var(--muted);
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      gap: 20px;
-      align-items: center;
-    }
-
-    #stats span { display: flex; align-items: center; gap: 5px; }
-    #stats b { color: var(--text); }
-
-    /* ── Category pills (web mode only) ── */
-    #category-bar {
-      padding: 12px 32px;
-      background: var(--bg);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      overflow-x: auto;
-    }
-
-    .cat-pill {
-      padding: 5px 12px;
-      border-radius: 20px;
-      border: 1px solid var(--border);
-      background: var(--surface);
-      color: var(--muted);
-      font-size: 0.73rem;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all .15s;
-      white-space: nowrap;
-    }
-
-    .cat-pill:hover { border-color: var(--accent); color: var(--accent); }
-    .cat-pill.active {
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      border-color: transparent;
-      color: #fff;
-    }
-
-    /* ── Grid ── */
-    main {
-      padding: 24px 32px;
+      margin: 0;
+      background: #111;
+      color: #eee;
+      font-family: sans-serif;
     }
 
     #grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 8px;
+      padding: 16px;
     }
 
-    .icon-card {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 16px 8px 12px;
+    .icon {
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: transform .15s, border-color .15s, box-shadow .15s, background .15s;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .icon-card::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(91,141,238,.06), rgba(167,139,250,.06));
-      opacity: 0;
-      transition: opacity .2s;
-    }
-
-    .icon-card:hover {
-      border-color: var(--accent);
-      transform: translateY(-2px);
-      box-shadow: 0 8px 24px rgba(0,0,0,.35);
-      background: var(--card-h);
-    }
-
-    .icon-card:hover::before { opacity: 1; }
-
-    .icon-card .sym {
-      font-size: 32px;
-      line-height: 1;
-      color: var(--text);
-      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 32;
-      transition: color .2s, font-variation-settings .2s;
-    }
-
-    .icon-card:hover .sym {
-      color: var(--accent);
-      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 32;
-    }
-
-    .icon-card .name {
-      font-size: 0.62rem;
-      color: var(--muted);
-      text-align: center;
-      word-break: break-all;
-      line-height: 1.3;
-      max-height: 2.6em;
-      overflow: hidden;
-    }
-
-    /* ── Toast / copied ── */
-    #toast {
-      position: fixed;
-      bottom: 32px;
-      left: 50%;
-      transform: translateX(-50%) translateY(80px);
-      background: var(--success);
-      color: #0d1117;
-      padding: 10px 20px;
-      border-radius: 30px;
-      font-weight: 700;
-      font-size: 0.85rem;
-      display: flex;
       align-items: center;
       gap: 6px;
-      transition: transform .3s cubic-bezier(.34,1.56,.64,1);
-      z-index: 999;
-      pointer-events: none;
+      padding: 12px 4px;
+      border-radius: 8px;
+      background: #1a1a1a;
     }
 
-    #toast.show { transform: translateX(-50%) translateY(0); }
-
-    /* ── Empty state ── */
-    #empty {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      padding: 80px 20px;
-      color: var(--muted);
-    }
-
-    #empty .sym {
+    .icon span:first-child {
       font-family: 'Material Symbols Outlined';
-      font-size: 64px;
-      color: var(--border);
+      font-size: 32px;
     }
 
-    /* ── Loading ── */
-    #loading {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      padding: 80px 20px;
-      color: var(--muted);
-    }
-
-    .spinner {
-      width: 40px;
-      height: 40px;
-      border: 3px solid var(--border);
-      border-top-color: var(--accent);
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-    }
-
-    @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-    @media (max-width: 600px) {
-      header { padding: 18px 16px; }
-      main { padding: 16px; }
-      #stats, #category-bar { padding: 10px 16px; }
-      h1 { font-size: 1.2rem; }
+    .icon span:last-child {
+      font-size: 0.6rem;
+      color: #888;
+      text-align: center;
+      word-break: break-all;
     }
   </style>
 </head>
+
 <body>
-
-<header>
-  <div class="header-top">
-    <span class="logo-icon">&#xe1ca;</span><!-- shapes -->
-    <div>
-      <h1>Material Symbols Explorer</h1>
-      <p class="subtitle">Google Material Symbols — Outlined · Rounded · Sharp</p>
-    </div>
-    <div class="badges">
-      <span class="badge badge-web">symbols-web.json</span>
-      <span class="badge badge-repo">symbols-repo.json</span>
-    </div>
-  </div>
-
-  <div class="controls">
-    <div class="search-wrap">
-      <span class="ico">&#xe8b6;</span><!-- search -->
-      <input id="search" type="search" placeholder="Buscar icono… (ej: arrow, home, wifi)" autocomplete="off" />
-    </div>
-
-    <div class="source-tabs" id="source-tabs">
-      <button id="btn-web"  class="active" onclick="setSource('web')">🌐 Web (categorías)</button>
-      <button id="btn-repo"           onclick="setSource('repo')">📦 Repo (completo)</button>
-    </div>
-
-    <div class="style-toggle">
-      <button id="sty-outlined" class="active" onclick="setStyle('Outlined')">Outlined</button>
-      <button id="sty-rounded"                 onclick="setStyle('Rounded')">Rounded</button>
-      <button id="sty-sharp"                   onclick="setStyle('Sharp')">Sharp</button>
-    </div>
-  </div>
-</header>
-
-<div id="stats">
-  <span>Fuente: <b id="stat-source">symbols-web.json</b></span>
-  <span>Total: <b id="stat-total">—</b> iconos</span>
-  <span>Mostrando: <b id="stat-visible">—</b></span>
-  <span id="stat-cat-wrap">Categoría: <b id="stat-cat">Todas</b></span>
-</div>
-
-<div id="category-bar"></div>
-
-<main>
-  <div id="loading">
-    <div class="spinner"></div>
-    <p>Cargando iconos…</p>
-  </div>
   <div id="grid"></div>
-  <div id="empty">
-    <span class="sym">&#xe5c9;</span>
-    <p>Sin resultados para "<span id="empty-q"></span>"</p>
-  </div>
-</main>
-
-<div id="toast">
-  <span class="material-symbols-outlined">&#xe876;</span>
-  Copiado al portapapeles
-</div>
-
-<script>
-  // ── State ──────────────────────────────────────────────────────────
-  let SOURCE      = 'web';        // 'web' | 'repo'
-  let STYLE       = 'Outlined';   // 'Outlined' | 'Rounded' | 'Sharp'
-  let CATEGORY    = '';           // '' = all
-  let QUERY       = '';
-  let webData     = {};           // { Category: [name, ...], ... }
-  let repoData    = [];           // [name, ...]
-
-  const grid       = document.getElementById('grid');
-  const loading    = document.getElementById('loading');
-  const emptyEl    = document.getElementById('empty');
-  const emptyQ     = document.getElementById('empty-q');
-  const statTotal  = document.getElementById('stat-total');
-  const statVis    = document.getElementById('stat-visible');
-  const statSrc    = document.getElementById('stat-source');
-  const statCat    = document.getElementById('stat-cat');
-  const catBar     = document.getElementById('category-bar');
-
-  // ── Load JSONs ─────────────────────────────────────────────────────
-  async function loadData() {
-    const [web, repo] = await Promise.all([
-      fetch('./symbols-web.json').then(r => r.json()),
-      fetch('./symbols-repo.json').then(r => r.json()),
-    ]);
-    webData  = web;
-    repoData = repo;
-    loading.style.display = 'none';
-    buildCategoryBar();
-    render();
-  }
-
-  // ── Category bar ──────────────────────────────────────────────────
-  function buildCategoryBar() {
-    catBar.innerHTML = '';
-    if (SOURCE !== 'web') { catBar.style.display = 'none'; return; }
-    catBar.style.display = 'flex';
-
-    const allPill = createPill('Todas', '');
-    catBar.appendChild(allPill);
-
-    Object.keys(webData).forEach(cat => {
-      catBar.appendChild(createPill(cat, cat));
+  <script>
+    fetch('./iconos.json').then(r => r.json()).then(icons => {
+      const grid = document.getElementById('grid');
+      const f = document.createDocumentFragment();
+      for (const [name, codepoint] of Object.entries(icons)) {
+        const div = document.createElement('div');
+        div.className = 'icon';
+        const sym = document.createElement('span');
+        sym.textContent = String.fromCodePoint(codepoint);
+        const lbl = document.createElement('span');
+        lbl.textContent = name;
+        div.appendChild(sym);
+        div.appendChild(lbl);
+        f.appendChild(div);
+      }
+      grid.appendChild(f);
     });
-  }
-
-  function createPill(label, value) {
-    const btn = document.createElement('button');
-    btn.className = 'cat-pill' + (CATEGORY === value ? ' active' : '');
-    btn.textContent = label;
-    btn.onclick = () => { CATEGORY = value; statCat.textContent = value || 'Todas'; buildCategoryBar(); render(); };
-    return btn;
-  }
-
-  // ── Source switch ──────────────────────────────────────────────────
-  function setSource(src) {
-    SOURCE = src;
-    CATEGORY = '';
-    document.getElementById('btn-web').classList.toggle('active', src === 'web');
-    document.getElementById('btn-repo').classList.toggle('active', src === 'repo');
-    statSrc.textContent = src === 'web' ? 'symbols-web.json' : 'symbols-repo.json';
-    statCat.textContent = 'Todas';
-    document.getElementById('stat-cat-wrap').style.display = src === 'web' ? '' : 'none';
-    buildCategoryBar();
-    render();
-  }
-
-  // ── Style switch ──────────────────────────────────────────────────
-  function setStyle(s) {
-    STYLE = s;
-    ['Outlined','Rounded','Sharp'].forEach(x => {
-      document.getElementById('sty-' + x.toLowerCase()).classList.toggle('active', x === s);
-    });
-    // Update existing icons font-class
-    document.querySelectorAll('.sym').forEach(el => {
-      el.className = 'sym material-symbols-' + s.toLowerCase();
-    });
-  }
-
-  // ── Filter icons ──────────────────────────────────────────────────
-  function getIcons() {
-    if (SOURCE === 'repo') return repoData;
-    if (CATEGORY) return webData[CATEGORY] || [];
-    return Object.values(webData).flat();
-  }
-
-  function filter(list) {
-    if (!QUERY) return list;
-    const q = QUERY.toLowerCase();
-    return list.filter(n => n.toLowerCase().includes(q));
-  }
-
-  // ── Render ─────────────────────────────────────────────────────────
-  function render() {
-    const all      = getIcons();
-    const filtered = filter(all);
-
-    statTotal.textContent = all.length.toLocaleString();
-    statVis.textContent   = filtered.length.toLocaleString();
-
-    grid.innerHTML = '';
-
-    if (filtered.length === 0) {
-      emptyQ.textContent = QUERY;
-      emptyEl.style.display = 'flex';
-      return;
-    }
-    emptyEl.style.display = 'none';
-
-    // Virtual render: first 300, then lazy append
-    const CHUNK = 300;
-    appendCards(filtered.slice(0, CHUNK));
-
-    if (filtered.length > CHUNK) {
-      let idx = CHUNK;
-      const observer = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && idx < filtered.length) {
-          appendCards(filtered.slice(idx, idx + CHUNK));
-          idx += CHUNK;
-          if (idx >= filtered.length) observer.disconnect();
-        }
-      });
-      // sentinel at end
-      const sentinel = document.createElement('div');
-      sentinel.style.height = '1px';
-      grid.after(sentinel);
-      observer.observe(sentinel);
-    }
-  }
-
-  function appendCards(icons) {
-    const frag = document.createDocumentFragment();
-    icons.forEach(name => {
-      const card = document.createElement('div');
-      card.className = 'icon-card';
-      card.title = name;
-      card.setAttribute('role', 'button');
-      card.setAttribute('aria-label', 'Copiar ' + name);
-
-      const sym = document.createElement('span');
-      sym.className = 'sym material-symbols-' + STYLE.toLowerCase();
-      sym.textContent = name;
-
-      const lbl = document.createElement('span');
-      lbl.className = 'name';
-      lbl.textContent = name;
-
-      card.appendChild(sym);
-      card.appendChild(lbl);
-      card.addEventListener('click', () => copyIcon(name));
-      frag.appendChild(card);
-    });
-    grid.appendChild(frag);
-  }
-
-  // ── Copy ───────────────────────────────────────────────────────────
-  let toastTimer;
-  function copyIcon(name) {
-    const ligature = `<span class="material-symbols-${STYLE.toLowerCase()}">${name}</span>`;
-    navigator.clipboard.writeText(ligature).catch(() => {});
-    const toast = document.getElementById('toast');
-    toast.classList.add('show');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => toast.classList.remove('show'), 2200);
-  }
-
-  // ── Search debounce ────────────────────────────────────────────────
-  let searchTimer;
-  document.getElementById('search').addEventListener('input', e => {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => { QUERY = e.target.value.trim(); render(); }, 200);
-  });
-
-  // ── Init ────────────────────────────────────────────────────────────
-  loadData();
-</script>
+  </script>
 </body>
+
 </html>
