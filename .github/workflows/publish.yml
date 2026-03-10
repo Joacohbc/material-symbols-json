@@ -10,9 +10,6 @@ concurrency: ${{ github.workflow }}-${{ github.ref }}
 jobs:
   publish-npm:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: material-icon-picker-helper
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -33,13 +30,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build package
-        run: pnpm run build
+        run: pnpm build
 
       - name: Create Release Pull Request or Publish
         id: changesets
         uses: changesets/action@v1
         with:
-          cwd: material-icon-picker-helper
-          publish: pnpm run release
+          publish: pnpm -r publish --access public --no-git-checks
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
