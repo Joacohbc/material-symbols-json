@@ -1,20 +1,17 @@
-name: Update Material Symbols JSON
+name: Update Material Symbols
 
 on:
   schedule:
-    # Ejecuta todos los días a la medianoche (UTC)
-    - cron: '0 0 * * *'
-  # Permite ejecutar el workflow manualmente desde la pestaña Actions de GitHub
-  workflow_dispatch:
+    - cron: "0 0 * * 0" # Every Sunday at midnight UTC
+  workflow_dispatch: # Manual trigger
+
+permissions:
+  contents: write
+  pull-requests: write
 
 jobs:
   update-symbols:
     runs-on: ubuntu-latest
-
-    # Necesario para que el action pueda hacer push
-    permissions:
-      contents: write
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,16 +19,37 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
-      - name: Run update script
-        run: node update_symbols.js
+      - name: Install dependencies
+        run: npm install
 
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
+      - name: Run download and process script
+        run: bash download_fonts.sh
+
+      - name: Update default icons.json
+        run: node from_font.js fonts/MaterialSymbolsOutlined.ttf icons.json
+
+      - name: Get timestamp
+        id: timestamp
+        run: echo "ts=$(date +%s)" >> $GITHUB_OUTPUT
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit_message: "chore(data): auto-update material symbols json"
-          file_pattern: "symbols-repo.json symbols-web.json"
-          commit_user_name: "github-actions[bot]"
-          commit_user_email: "41898282+github-actions[bot]@users.noreply.github.com"
-          commit_author: "github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>"
+          token: ${{ secrets.GITHUB_TOKEN }}
+          commit-message: "chore(data): auto-update material symbols"
+          branch: update/${{ steps.timestamp.outputs.ts }}
+          title: "chore(data): auto-update material symbols"
+          body: |
+            Automated update of Material Symbols fonts and JSON definitions.
+
+            Variants updated:
+            - Outlined
+            - Rounded
+            - Sharp
+          add-paths: |
+            icons.json
+            icons-outlined.json
+            icons-rounded.json
+            icons-sharp.json
