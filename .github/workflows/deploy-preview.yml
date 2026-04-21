@@ -12,6 +12,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 jobs:
   deploy:
@@ -20,9 +21,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Prepare preview bundle
+        run: |
+          mkdir -p dist/fonts
+          cp index.html dist/
+          cp icons*.json dist/
+          cp fonts/*.ttf dist/fonts/
+
       - name: Deploy Preview
         uses: rossjrw/pr-preview-action@v1
         with:
-          source-dir: .
+          source-dir: dist/
           preview-branch: gh-pages
           qr-code: false
