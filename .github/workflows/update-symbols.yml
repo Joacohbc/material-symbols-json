@@ -3,7 +3,7 @@ name: Update Material Symbols
 on:
   schedule:
     - cron: "0 0 * * 0" # Every Sunday at midnight UTC
-  workflow_dispatch: # Manual trigger
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -24,11 +24,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run download and process script
+      - name: Download fonts and generate variant JSONs
         run: bash download_fonts.sh
-
-      - name: Update default icons.json
-        run: node from_font.js fonts/MaterialSymbolsOutlined.ttf icons.json
 
       - name: Get timestamp
         id: timestamp
@@ -53,3 +50,6 @@ jobs:
             icons-outlined.json
             icons-rounded.json
             icons-sharp.json
+            fonts/MaterialSymbolsOutlined.ttf
+            fonts/MaterialSymbolsRounded.ttf
+            fonts/MaterialSymbolsSharp.ttf
