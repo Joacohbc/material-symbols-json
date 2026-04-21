@@ -1,7 +1,7 @@
 name: Deploy Icon Preview
 
 on:
-  push:
+  pull_request:
     branches:
       - master
     paths:
