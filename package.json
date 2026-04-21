@@ -1,36 +1,5 @@
 {
-  "name": "material-icon-picker-helper",
-  "version": "1.0.1",
-  "description": "List of Material Symbols Icons.",
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
-  "scripts": {
-    "generate-types": "node scripts/generate-types.js",
-    "build": "tsup src/index.ts --format cjs,esm --dts",
-    "dev": "npm run build -- --watch"
-  },
-  "keywords": [
-    "material-symbols",
-    "typescript"
-  ],
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "tsup": "^8.0.0",
-    "typescript": "^5.0.0",
-    "@changesets/cli": "^2.30.0"
-  },
-  "dependencies": {
-    "opentype.js": "^1.3.4"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Joacohbc/material-symbols-json.git"
-  },
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/Joacohbc/material-symbols-json/issues"
-  },
-  "homepage": "https://github.com/Joacohbc/material-symbols-json#readme"
+	"dependencies": {
+		"opentype.js": "^1.3.4"
+	}
 }
