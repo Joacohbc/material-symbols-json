@@ -1,29 +1,45 @@
-# Material Icon Picker Helper
+# material-symbols-json
 
-A framework-agnostic helper library containing [Material Symbols](https://fonts.google.com/icons) data, TypeScript types, and metadata.
+JSON mappings of all [Material Symbols](https://fonts.google.com/icons) icons extracted directly from the variable TTF fonts (Outlined, Rounded, Sharp). Each file maps icon name → Unicode codepoint.
 
-This package provides everything you need to build your own icon picker or icon component without being tied to a specific framework or bundling heavy font files.
+## Files
 
-## Features
+| File | Font source | Description |
+|------|-------------|-------------|
+| `icons-outlined.json` | `MaterialSymbolsOutlined.ttf` | Outlined variant |
+| `icons-rounded.json` | `MaterialSymbolsRounded.ttf` | Rounded variant |
+| `icons-sharp.json` | `MaterialSymbolsSharp.ttf` | Sharp variant |
 
-- **Strict TypeScript**: `IconName` is a union type of all available Material Symbols (over 3,000 icons).
-- **Codepoint Mapping**: Access the exact integer codepoints via `iconMap`.
-- **Metadata**: Includes `fontFamilyMap` for `outlined`, `rounded`, and `sharp` variants.
-- **Lightweight**: Zero runtime dependencies.
+Each entry:
 
-## Installation
+```json
+{
+  "home": 57520,
+  "search": 59574,
+  ...
+}
+```
+
+~3900 icons per variant, auto-updated weekly from [google/material-design-icons](https://github.com/google/material-design-icons).
+
+## Install
 
 ```bash
 npm install material-icon-picker-helper
 ```
 
-## Setup (Important)
+## Usage
 
-This package **does not** bundle the `.ttf` font files. You must load the fonts in your application.
+```js
+import { outlined, rounded, sharp } from 'material-icon-picker-helper';
 
-### Load the Fonts in CSS
+const codepoint = outlined['home']; // 57520
+String.fromCodePoint(codepoint);    // renders the icon glyph
+```
 
-Assuming you have the fonts downloaded (e.g., in a `public/fonts/` directory):
+## Use the Fonts
+
+Load the TTF fonts with `@font-face` (e.g. from a `public/fonts/` directory):
 
 ```css
 @font-face {
@@ -48,53 +64,19 @@ Assuming you have the fonts downloaded (e.g., in a `public/fonts/` directory):
 }
 ```
 
-## Usage
+Then render an icon by applying the codepoint as text content:
 
-### Using Codepoints
-
-Using codepoints is recommended to prevent rendering "text" during font loading.
-
-```typescript
-import { iconMap, fontFamilyMap } from 'material-icon-picker-helper';
-
-const iconName = 'home';
-const codepoint = iconMap[iconName]; // 0xe88a
-
-// Example rendering in Vanilla JS:
-const el = document.createElement('span');
-el.style.fontFamily = fontFamilyMap['outlined'];
-el.textContent = String.fromCodePoint(codepoint);
-document.body.appendChild(el);
-```
-
-### TypeScript Types
-
-```typescript
-import { IconName, IconVariant } from 'material-icon-picker-helper';
-
-function getIcon(name: IconName, variant: IconVariant) {
-  // name is type-safe: 'home', 'search', 'settings', etc.
+```css
+.icon {
+  font-family: 'Material Symbols Outlined';
+  font-size: 24px;
 }
 ```
 
-## API
+```html
+<span class="icon">&#x57520;</span>
+```
 
-### `iconMap`
+## How it works
 
-A `Record<IconName, number>` mapping icon names to their Unicode codepoints.
-
-### `fontFamilyMap`
-
-A mapping of `IconVariant` to the recommended font family name.
-
-- `outlined`: 'Material Symbols Outlined'
-- `rounded`: 'Material Symbols Rounded'
-- `sharp`: 'Material Symbols Sharp'
-
-### `iconNames`
-
-An array of all available icon names for searching or listing.
-
-## Development
-
-This package is updated automatically via GitHub Actions whenever the upstream Material Symbols change. The `scripts/generate-types.js` script reads the latest mapping and rebuilds the `IconSet.ts` file.
+Icons are extracted from the TTF variable fonts using [opentype.js](https://github.com/opentypejs/opentype.js). Only glyphs in the Unicode PUA range (≥ U+E000) with a valid name are included. The fonts and JSON files are auto-updated weekly via GitHub Actions.

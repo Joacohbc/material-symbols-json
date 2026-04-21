@@ -46,7 +46,6 @@ jobs:
             - Rounded
             - Sharp
           add-paths: |
-            icons.json
             icons-outlined.json
             icons-rounded.json
             icons-sharp.json
