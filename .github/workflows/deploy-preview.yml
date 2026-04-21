@@ -30,6 +30,6 @@ jobs:
       - name: Deploy Preview
         uses: rossjrw/pr-preview-action@v1
         with:
-          source-dir: /
+          source-dir: dist/
           preview-branch: gh-pages
           qr-code: false
