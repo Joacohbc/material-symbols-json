@@ -27,10 +27,9 @@ jobs:
           cp icons*.json dist/
           cp fonts/*.ttf dist/fonts/
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
+      - name: Deploy Preview
+        uses: rossjrw/pr-preview-action@v1
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
-          publish_branch: gh-pages
-          commit_message: "chore(preview): update icon preview site"
+          source-dir: /
+          preview-branch: gh-pages
+          qr-code: false
