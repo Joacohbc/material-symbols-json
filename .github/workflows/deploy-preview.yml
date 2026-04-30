@@ -2,8 +2,6 @@ name: Deploy Icon Preview
 
 on:
   pull_request:
-    branches:
-      - master
     paths:
       - "icons*.json"
       - "fonts/*.ttf"
