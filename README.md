@@ -22,21 +22,6 @@ Each entry:
 
 ~3900 icons per variant, auto-updated weekly from [google/material-design-icons](https://github.com/google/material-design-icons).
 
-## Install
-
-```bash
-npm install material-icon-picker-helper
-```
-
-## Usage
-
-```js
-import { outlined, rounded, sharp } from 'material-icon-picker-helper';
-
-const codepoint = outlined['home']; // 57520
-String.fromCodePoint(codepoint);    // renders the icon glyph
-```
-
 ## Use the Fonts
 
 Load the TTF fonts with `@font-face` (e.g. from a `public/fonts/` directory):
