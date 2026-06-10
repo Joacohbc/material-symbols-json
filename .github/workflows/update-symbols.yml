@@ -40,7 +40,12 @@ jobs:
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v6
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          # Usamos un PAT (no el GITHUB_TOKEN) para que el PR creado
+          # dispare otros workflows como deploy-preview.yml. Los eventos
+          # generados por el GITHUB_TOKEN no disparan workflows (evita
+          # ejecuciones recursivas). Si PAT no esta configurado, cae al
+          # GITHUB_TOKEN (el PR se crea pero el preview no saltara).
+          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
           commit-message: "chore(data): auto-update material symbols"
           branch: update/${{ steps.timestamp.outputs.ts }}
           title: "chore(data): auto-update material symbols"
